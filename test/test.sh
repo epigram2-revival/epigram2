@@ -38,6 +38,12 @@ mkdir ".tests"
 # 2: no Pig binary
 status=0
 
+## Case counters (exposed in the summary)
+n_passed=0
+n_failed=0
+n_undefined=0
+n_disabled=0
+
 ## Quiet flag:
 # 0: verbose
 # 1: quiet
@@ -95,6 +101,7 @@ do
     if [ -f "${script}.disabled" ]
     then 
 	echo -e "$disabled $script is disabled"
+	n_disabled=$((n_disabled+1))
 	continue
     fi
     # echo -n "Running test $script..."
@@ -117,21 +124,27 @@ do
     if [ ! -f "results/$script.log" ]
     then
 	echo -e "$undefined Please provide the desired output for $script"
+	status=1
+	n_undefined=$((n_undefined+1))
     else
 	if ! diff -u "results/$script.log" ".tests/$script.log" > ".tests/$script.diff"
 	then
 	    echo -e "$failed $script does not match the expected output"
 	    status=1
+	    n_failed=$((n_failed+1))
 	    if [ $quiet -eq 0 ]
 	    then
 		cat ".tests/$script.diff"
 	    fi
 	else
 	    echo -e "$passed $script looks alright!"
+	    n_passed=$((n_passed+1))
 	fi
     fi
 done
 
+echo ""
+echo "Summary: $((n_passed+n_failed+n_undefined+n_disabled)) cases: $n_passed passed, $n_failed failed, $n_undefined undefined, $n_disabled disabled (status=$status)"
 echo ""
 
 ## Delegate post-processing of measurements
