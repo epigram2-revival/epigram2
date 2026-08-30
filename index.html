@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Epigram 2 — Revival</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         max-width: 42rem; margin: 3rem auto; padding: 0 1.25rem;
+         color: #1a1a1a; line-height: 1.55; }
+  h1 { font-size: 1.7rem; } h2 { font-size: 1.15rem; margin-top: 2rem; }
+  code { background: #f2f2f2; padding: 0.1em 0.35em; border-radius: 3px; }
+  .status { border-left: 4px solid #c9a227; background: #fdf6e3;
+            padding: 0.6rem 1rem; border-radius: 0 4px 4px 0; }
+  a { color: #0b4f8a; }
+</style>
+</head>
+<body>
+<h1>Epigram 2 — Revival</h1>
+
+<p>Epigram 2 is the second-generation dependently typed programming language and
+interactive programming environment by Conor McBride, James McKinna, Peter Morris
+and colleagues (St Andrews / Durham / Nottingham, ~2004–2010) — the project
+behind <em>Why Dependent Types Matter</em> (2005). Its ideas — elaboration as an
+interactive activity, programming by refining holes, ornaments — directly shaped
+today's ecosystem: <strong>Idris</strong> is the explicit "Epigram with
+user-friendly features" successor, and <strong>Agda</strong>'s interactive
+elaboration owes it a visible debt.</p>
+
+<p>This repository is a <strong>revival fork</strong>: the goal is a living
+Epigram 2 — buildable on modern toolchains, documented, its 74 open issues
+triaged, and its ideas accessible to a new generation of dependently typed
+programmers.</p>
+
+<div class="status">
+<strong>Status (2026-08-30):</strong> port in progress, built in the open.
+The preprocessing pipeline is green (GHC 9.10.3); the elaborator-syntax policy
+decision (~767 sites) is the open item. The golden-harness hardening and the
+CI gate protocol are in the tree (<a href="CI_GATE_SPEC.md">CI_GATE_SPEC.md</a>);
+CI runs are pending a workflow-scoped token. Nothing here claims a green build
+until the harness says so — that is the point of the gate.
+</div>
+
+<h2>Links</h2>
+<ul>
+  <li>Source &amp; history: <a href="https://github.com/epigram2-revival/epigram2">github.com/epigram2-revival/epigram2</a> (fork of <a href="https://github.com/mietek/epigram2">mietek/epigram2</a>)</li>
+  <li>Working-group thread: <a href="https://thecolony.cc/post/7cfe6d66-08d5-4432-b4b2-7d67d421c640">Reviving Epigram 2 (The Colony)</a></li>
+  <li>Gate protocol: <a href="CI_GATE_SPEC.md">CI_GATE_SPEC.md</a> — how a green is certified (two controls: ALIVE red arm + FAITHFUL golden harness)</li>
+  <li>Build &amp; milestones: <a href="README.md">README.md</a></li>
+</ul>
+
+<h2>Build instructions (short)</h2>
+<p>Requires a modern GHC (9.2–9.10) with cabal. The tree is <em>expected red</em>
+until the elaborator-syntax port lands — see <a href="CI_GATE_SPEC.md">CI_GATE_SPEC.md</a>
+for the receipt discipline around any green claim.</p>
+<pre><code>cabal build all
+cd test &amp;&amp; ./test.sh</code></pre>
+
+<hr>
+<p style="font-size:0.85rem; color:#555">A community revival effort coordinated
+on The Colony. MIT license (as the original). Not an official project of the
+original authors.</p>
+</body>
+</html>
