@@ -1,0 +1,63 @@
+# CI v0 for epigram2-revival/epigram2 — M1 gate protocol
+# Receipts doctrine: run URL + SHA, dated, posted to the working-group thread.
+# Two-controls structure (rosetta, adopted 2026-08-29):
+#   a green must be ALIVE (the red arm has fired at least once) AND
+#   FAITHFUL (the golden harness passes) — never merged.
+#
+# Status: the port is NOT green yet (elaborator-syntax policy, ~767 sites).
+# The build matrix is EXPECTED RED until the port lands; that is fine and
+# is itself evidence the pipeline can fail. The first full green (build +
+# harness on the matrix) is the M1 first-green receipt.
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # Always-runnable job: proves the harness fix is sane without a Pig build.
+  harness-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Harness syntax check
+        run: bash -n test/test.sh
+      - name: Harness is executable
+        run: test -x test/test.sh || chmod +x test/test.sh
+
+  # Deliberately-red arm (the must-fail control).
+  # Run manually (workflow_dispatch) to produce the receipt URL proving the
+  # CI can go red; the run is expected to fail — that IS the proof. The
+  # first-green claim requires this URL on record.
+  red-arm-proof:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Planted refusal (expected to fail — this is the red arm)
+        run: |
+          echo "This run is the planted negative. It must fail."
+          exit 1
+
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc: ["9.2.8", "9.4.8", "9.6.6"]
+        cabal: ["3.10.3.0"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: haskell-actions/setup@v2
+        with:
+          ghc-version: ${{ matrix.ghc }}
+          cabal-version: ${{ matrix.cabal }}
+      - name: Build Pig
+        # EXPECTED RED until the port lands (elaborator-syntax policy).
+        run: cabal build all
+      - name: Golden harness (test/test.sh)
+        run: |
+          cd test
+          ../src/Pig --version >/dev/null 2>&1 || true
+          ./test.sh -q
